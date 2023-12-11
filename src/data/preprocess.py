@@ -47,7 +47,7 @@ def merge_data(only_text, tags_classes, save_dir):
 
 
 # # Preprocessing dataset (cleaning text)
-def preprocess(dataset_dir, new_dataset_dir):
+def preprocess_data(dataset_dir, new_dataset_dir):
     # Load data from disk
     dataset = load_dataset_from_disk(dataset_dir)
     # Dataframe
@@ -62,14 +62,12 @@ def preprocess(dataset_dir, new_dataset_dir):
     df["text"] = df["text"].str.replace(r"<.*?>", "", regex=True)
     # Remove @ with names of users standing after it
     df["text"] = df["text"].str.replace(r'@\w+', "", regex=True)
-    # Remove # with words standing after it
-    df["text"] = df["text"].str.replace(r"#\S+", "", regex=True)
+    # Remove hashtags
+    df["text"] = df["text"].str.replace(r"#\w+", " ", regex=True)
     # Remove whitespaces
     df["text"] = df["text"].str.replace(r"\s+", " ", regex=True)
-    # Remove spaces and double spaces at the beginning and at the end of the text
-    df["text"] = df["text"].str.strip()
     # Remove punctuation
-    df["text"] = df["text"].str.replace(r"[^\w\s]", "", regex=True)
+    df["text"] = df["text"].str.replace(r"[^\w\s]", " ", regex=True)
     # Remove numbers
     df["text"] = df["text"].str.replace(r"\d+", "", regex=True)
     # Remove emojis and letters after them
@@ -80,43 +78,11 @@ def preprocess(dataset_dir, new_dataset_dir):
     df["text"] = df["text"].str.replace(r"RT", "", regex=True)
     # Remove polish emojis like XD,xD,xd, xdd, x, xx etc.
     df["text"] = df["text"].str.replace(r"[xX][dD]+", "", regex=True)
+    # Remove one or more spaces between words
+    df["text"] = df["text"].str.replace(r"\s+", " ", regex=True)
+    # Remove spaces at the beginning and at the end of the text
+    df["text"] = df["text"].str.strip()
     # Save preprocessed dataset to disk
     df.to_csv(new_dataset_dir, sep="\t", index=False)
 
     return df
-
-
-
-
-# # Load data from disk
-# # Train set
-train_text = load_dataset_from_disk("data/Train/training_set_clean_only_text.txt")
-train_tags = load_dataset_from_disk("data/Train/training_set_clean_only_tags.txt")
-# # Test set
-test_text = load_dataset_from_disk("data/Test/test_set_clean_only_text.txt")
-test_tags = load_dataset_from_disk("data/Test/test_set_clean_only_tags.txt")
-
-# # Merging data into one csv file
-merge_data(train_text, train_tags, "data/Train/train_merged.csv")
-merge_data(test_text, test_tags, "data/Test/test_merged.csv")
-
-# # Preprocessing data
-train = preprocess("data/Train/train_merged.csv", "data/Train/train__preprocessed.csv")
-test = preprocess("data/Test/test_merged.csv", "data/Test/test_preprocessed.csv")
-
-# #Results after preprocessing
-# print("Train set classes distribution: ", train["class"].value_counts())
-# print("Test set classes distribution: ", test["class"].value_counts())
-
-
-
-
-
-
-
-
-
-
-
-
-
