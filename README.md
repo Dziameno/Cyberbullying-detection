@@ -35,5 +35,27 @@ weighted avg        0.88      0.89      0.86       942
  - Model has high accuracy for non-harmful tweets <br>
  - Class 0 has more instances than class 1, so model is biased to class 0.
 
+#### Augmentation:
+- back translation of harmful tweets polish->english->polish
+
+Acc score: 88.21%
+```
+                predicted: 
+actual:                         postive  negative
+       positive                   818       3
+       negative                   108      13
+```
+
+```
+                precision    recall  f1-score   support
+
+0-non-harmful       0.88      1.00      0.94       821
+1-harmful           0.81      0.11      0.19       121
+
+    accuracy                            0.88       942
+   macro avg        0.85      0.55      0.56       942
+weighted avg        0.87      0.88      0.84       942
+```
+- f1 is lower than without augmentation
 
 
