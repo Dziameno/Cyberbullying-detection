@@ -13,7 +13,7 @@ non-harmful             8608            821
 harmful                  753            121
 ```
 
-#### Results of SVM classifier:
+#### Results of SVC classifier:
 Acc score: 88.85%
 ```
                 predicted: 
@@ -34,6 +34,27 @@ weighted avg        0.88      0.89      0.86       942
 ```
  - Model has high accuracy for non-harmful tweets <br>
  - Class 0 has more instances than class 1, so model is biased to class 0.
+
+#### Results of SVC classifier with class_weight='balanced':
+Acc score: 89.38%
+```
+                predicted: 
+actual:                         postive  negative
+       positive                   795       26
+       negative                    74       47
+       
+```
+```
+               precision    recall  f1-score   support
+
+           0       0.91      0.97      0.94       821
+           1       0.64      0.39      0.48       121
+
+    accuracy                           0.89       942
+   macro avg       0.78      0.68      0.71       942
+weighted avg       0.88      0.89      0.88       942
+```
+
 
 #### Augmentation:
 - back translation of harmful tweets polish->english->polish

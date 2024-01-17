@@ -1,14 +1,7 @@
 from src.data.preprocess import load_dataset_from_disk
 from difflib import SequenceMatcher
-
 import pandas as pd
 from googletrans import Translator
-import nltk
-import torch
-import random
-
-nltk.download('wordnets')
-nltk.download('omw-1.4')
 
 # def back_translation(dataset_dir, new_dataset_dir):
 #     # Load data from disk
