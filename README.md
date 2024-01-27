@@ -56,12 +56,14 @@ weighted avg       0.88      0.89      0.88       942
 ```
 #### Results of Multinominal Naive Bayes classifier:
 Acc score:  87.9%
+```
 Confusion matrix:
                      predicted:
 actual:                            positive      negative
        positive                      818             3
        negative                      111            10
-
+```
+```
 Classification report:
                precision    recall  f1-score   support
 
@@ -71,15 +73,17 @@ Classification report:
     accuracy                           0.88       942
    macro avg       0.82      0.54      0.54       942
 weighted avg       0.87      0.88      0.83       942
-
+```
 #### Results of Multilayer Perceptron classifier:
 Accuracy score:  88%
+```
 Confusion matrix:
                      predicted:
 actual:                            positive      negative
        positive                      802            19
        negative                       94            27
-
+```
+```
 Classification report:
                precision    recall  f1-score   support
 
@@ -89,15 +93,17 @@ Classification report:
     accuracy                           0.88       942
    macro avg       0.74      0.60      0.63       942
 weighted avg       0.86      0.88      0.86       942
-
+```
 #### Results of Gradient Boosting Machines classifier:
 Accuracy score:  87.9%
+```
 Confusion matrix:
                      predicted:
 actual:                            positive      negative
        positive                      821            0
        negative                      114            7
-
+```
+```
 Classification report:
                precision    recall  f1-score   support
 
@@ -107,7 +113,7 @@ Classification report:
     accuracy                           0.88       942
    macro avg       0.94      0.53      0.52       942
 weighted avg       0.89      0.88      0.83       942
-
+```
 #### Augmentation:
 - back translation of harmful tweets polish->english->polish
 
