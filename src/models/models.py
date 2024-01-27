@@ -67,6 +67,95 @@ def train_svm(train, test, save_dir):
     return text_clf
 
 
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+
+# Multinomial Naive Bayes model
+def train_mnb(train, test, save_dir):
+    train["text"].fillna("", inplace=True)
+    test["text"].fillna("", inplace=True)
+
+    # Data vectorizing
+    vectorizer = CountVectorizer()
+    X_train = vectorizer.fit_transform(train["text"])
+    X_test = vectorizer.transform(test["text"])
+
+    # Training model
+    model = MultinomialNB()
+    model.fit(X_train, train["class"])
+
+    # Predicting test set
+    predictions = model.predict(X_test)
+
+    # Printing results
+    print("Accuracy score: ", accuracy_score(test["class"], predictions))
+    print("Confusion matrix: \n", confusion_matrix(test["class"], predictions))
+    print("Classification report: \n", classification_report(test["class"], predictions))
+
+    # Save the trained model
+    with open(save_dir, "wb") as f:
+        pickle.dump(model, f)
+
+    return model
+
+from sklearn.neural_network import MLPClassifier
+
+def train_mlp(train, test, save_dir):
+    train["text"].fillna("", inplace=True)
+    test["text"].fillna("", inplace=True)
+
+    # Data vectorizing
+    vectorizer = CountVectorizer()
+    X_train = vectorizer.fit_transform(train["text"])
+    X_test = vectorizer.transform(test["text"])
+
+    # Training model
+    model = MLPClassifier(hidden_layer_sizes=(10), max_iter=100)
+    model.fit(X_train, train["class"])
+
+    # Predicting test set
+    predictions = model.predict(X_test)
+
+    # Printing results
+    print("Accuracy score: ", accuracy_score(test["class"], predictions))
+    print("Confusion matrix: \n", confusion_matrix(test["class"], predictions))
+    print("Classification report: \n", classification_report(test["class"], predictions))
+
+    # Save the trained model
+    with open(save_dir, "wb") as f:
+        pickle.dump(model, f)
+
+    return model
+
+from sklearn.ensemble import GradientBoostingClassifier
+
+def train_gbm(train, test, save_dir):
+    train["text"].fillna("", inplace=True)
+    test["text"].fillna("", inplace=True)
+
+    # Data vectorizing
+    vectorizer = CountVectorizer()
+    X_train = vectorizer.fit_transform(train["text"])
+    X_test = vectorizer.transform(test["text"])
+
+    # Training model
+    model = GradientBoostingClassifier(n_estimators=100, learning_rate=0.1)
+    model.fit(X_train, train["class"])
+
+    # Predicting test set
+    predictions = model.predict(X_test)
+
+    # Printing results
+    print("Accuracy score: ", accuracy_score(test["class"], predictions))
+    print("Confusion matrix: \n", confusion_matrix(test["class"], predictions))
+    print("Classification report: \n", classification_report(test["class"], predictions))
+
+    # Save the trained model
+    with open(save_dir, "wb") as f:
+        pickle.dump(model, f)
+
+    return model
+
 def check_svm(input_text):
     with open("../models/svm_model.pkl", "rb") as f:
         model = pickle.load(f)

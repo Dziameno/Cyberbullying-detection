@@ -1,7 +1,7 @@
 import pandas as pd
 
 from src.data.preprocess import load_dataset_from_disk, merge_data, preprocess_data
-from src.models.models import train_svm, train_svm_balanced, check_svm, check_svm_balanced
+from src.models.models import *
 from src.data.augmentation import back_translation
 
 if __name__ == "__main__":
@@ -15,7 +15,7 @@ if __name__ == "__main__":
 
     # # Merging data into one csv file
     # merge_data(train_text, train_tags, "../data/Train/train_merged.csv")
-    # merge_data(test_text, test_tags, "../data/Test/test_merged.csv")
+    # merge_data(test_text, test_tags, "../data/Test/test_merged.csv")  
 
     # # Preprocessing data
     # preprocess_data("../data/Train/train_merged.csv", "../data/Train/train_preprocessed.csv")
@@ -27,10 +27,19 @@ if __name__ == "__main__":
 
     # train = pd.read_csv("../data/Train/train_preprocessed.csv", sep="\t")
     # test = pd.read_csv("../data/Test/test_preprocessed.csv", sep="\t")
-    #
+    
     # # SVM model
     # train_svm_balanced(train, test, "../models/svm_model_balanced.pkl")
     # train_svm(train, test, "../models/svm_model.pkl")
+
+    # Multinominal Naive Bayes model
+    # train_mnb(train, test, "../models/mnb_model.pkl")
+    
+    # Multilayer Perceptron model
+    # train_mlp(train, test, "../models/mlp_model.pkl")
+    
+    # Gradient Boosting Machines model
+    # train_gbm(train, test, "../models/gbm_model.pkl")
 
     check_svm("Ty dzbanie")
     check_svm_balanced("Ty dzbanie")
