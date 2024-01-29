@@ -1,4 +1,4 @@
-import pandas as pd
+from random import sample
 
 from src.data.preprocess import *
 from src.models.models import *
@@ -42,22 +42,26 @@ if __name__ == "__main__":
     # train_gbm(train, test, "../models/gbm_model.pkl")
 
 
-    # Flair model
-    train_file = "../data/Train/train_preprocessed.csv"
-    test_file = "../data/Test/test_preprocessed.csv"
+    # # Flair model
+    # train_file = "../data/Train/train_preprocessed.csv"
+    # test_file = "../data/Test/test_preprocessed.csv"
+    #
+    # train_flair_classifier(train_file, test_file, "../models/flair_model")
 
-    train_flair_classifier(train_file, test_file, "../models/flair_model")
+    # SetFit model
+    # setfit("OrlikB/st-polish-kartonberta-base-alpha-v1", "../models/st-polish-kartonberta-base-alpha-v1")
+    # matrix_report_hf("../models/st-polish-kartonberta-base-alpha-v1", test)
 
     # check_model("Ty dzbanie", "../models/svm_model.pkl")
     # check_model("Ty dzbanie", "../models/svm_model_balanced.pkl")
     # check_flair_model("Ty dzbanie", "../models/flair_model/best-model.pt", "../models/flair_model/final-model.pt")
+    # check_setfit_model("Ty dzbanie", "../models/st-polish-kartonberta-base-alpha-v1")
 
     # check_model("Ty dzbanie", "../models/mnb_model.pkl")
     # check_model("Ty dzbanie", "../models/mlp_model.pkl")
     # check_model("Ty dzbanie", "../models/gbm_model.pkl")
 
     # #Augmentation
-    #
     # # Back translation
     # back_translation("../data/Train/train_preprocessed.csv", "../data/Train/train_back_translation.csv")
     #

@@ -1,18 +1,18 @@
-import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.svm import LinearSVC
-from sklearn.pipeline import Pipeline
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 import pickle
 
-from sklearn.utils import class_weight
-
+import numpy as np
 from flair.data import Corpus, Sentence
 from flair.datasets import ColumnCorpus
 from flair.embeddings import WordEmbeddings, FlairEmbeddings, DocumentRNNEmbeddings
 from flair.models import TextClassifier
 from flair.trainers import ModelTrainer
-
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+from sklearn.pipeline import Pipeline
+from sklearn.svm import LinearSVC
+from sklearn.utils import class_weight
+from datasets import load_dataset
+from setfit import SetFitModel, Trainer, sample_dataset, TrainingArguments
 
 # Support Vector Machine (SVM) to classify the data
 def train_svm_balanced(train, test, save_dir):
@@ -107,6 +107,34 @@ def train_flair_classifier(train_file, test_file, save_dir):
     # Save the model
     classifier.save(save_dir)
 
+from datasets import Dataset
+
+def setfit(model_link, save_dir):
+    model = SetFitModel.from_pretrained(model_link)
+
+    dataset = load_dataset("poleval2019_cyberbullying", "task01")
+
+    train_dataset = sample_dataset(dataset["train"], label_column="label", num_samples=20)
+    test_dataset = dataset["test"]
+
+    model.labels = ["0", "1"]
+
+    args = TrainingArguments(
+        batch_size=128,
+        num_epochs=10,
+    )
+
+    trainer = Trainer(
+        model=model,
+        args=args,
+        train_dataset=train_dataset,
+    )
+
+    trainer.train()
+
+    trainer.evaluate(test_dataset)
+
+    SetFitModel.save_pretrained(model, save_dir)
 
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
@@ -243,8 +271,40 @@ def check_flair_model(input_text, best_model_path, final_model_path):
     else:
         return 'Non-harmful'
 
+def check_setfit_model(input_text, model_path):
+    model = SetFitModel.from_pretrained(model_path)
+    preds = model.predict([input_text])
+
+    if preds == ['1']:
+        print("Harmful")
+    else:
+        print("Non-harmful")
 
 
+from sklearn.metrics import confusion_matrix, classification_report
 
+def matrix_report_hf(model_path, test):
+    model = SetFitModel.from_pretrained(model_path)
 
+    true_labels_list = []
+    predicted_labels_list = []
 
+    # Iterate over each row in the test set
+    for index, row in test.iterrows():
+        text = row["text"]
+
+        # Get the predicted labels for the current text
+        try:
+            predictions = model.predict([text])
+            predicted_label = str(predictions[0])
+        except Exception as e:
+            print(f"An error occurred during prediction for text '{text}': {e}")
+            predicted_label = None
+
+        # Append true and predicted labels to the lists
+        true_labels_list.append(str(row["class"]))
+        predicted_labels_list.append(predicted_label)
+
+    # Using sklearn to print the confusion matrix and classification report
+    print("Confusion Matrix:\n", confusion_matrix(true_labels_list, predicted_labels_list))
+    print("Classification Report:\n", classification_report(true_labels_list, predicted_labels_list))

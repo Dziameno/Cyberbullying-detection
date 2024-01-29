@@ -114,6 +114,27 @@ Classification report:
    macro avg       0.94      0.53      0.52       942
 weighted avg       0.89      0.88      0.83       942
 ```
+
+#### Results of SetFit with st-polish-kartonberta-base-alpha-v1:
+Accuracy score:  82.8%
+```
+Confusion matrix:
+                     predicted:
+actual:                            positive      negative
+       positive                      680           141
+       negative                      29            92
+```
+```
+Classification Report:
+               precision    recall  f1-score   support
+
+           0       0.96      0.83      0.89       821
+           1       0.39      0.76      0.52       121
+
+    accuracy                           0.82       942
+   macro avg       0.68      0.79      0.70       942
+weighted avg       0.89      0.82      0.84       942
+```
 #### Augmentation:
 - back translation of harmful tweets polish->english->polish
 
