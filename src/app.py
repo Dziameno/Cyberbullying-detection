@@ -1,5 +1,3 @@
-from random import sample
-
 from src.data.preprocess import *
 from src.models.models import *
 from src.data.augmentation import back_translation
