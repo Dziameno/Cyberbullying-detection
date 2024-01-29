@@ -7,6 +7,12 @@ import pickle
 
 from sklearn.utils import class_weight
 
+from flair.data import Corpus, Sentence
+from flair.datasets import ColumnCorpus
+from flair.embeddings import WordEmbeddings, FlairEmbeddings, DocumentRNNEmbeddings
+from flair.models import TextClassifier
+from flair.trainers import ModelTrainer
+
 
 # Support Vector Machine (SVM) to classify the data
 def train_svm_balanced(train, test, save_dir):
@@ -65,6 +71,41 @@ def train_svm(train, test, save_dir):
         pickle.dump(text_clf, f)
 
     return text_clf
+
+def train_flair_classifier(train_file, test_file, save_dir):
+    # Define your corpus
+    corpus: Corpus = ColumnCorpus(
+        data_folder='.',  # The directory containing the train and test files
+        column_format={0: 'text', 1: 'class'},
+        train_file=train_file,
+        test_file=test_file
+    )
+
+    # Define embeddings (you can use any combination of embeddings)
+    word_embeddings = WordEmbeddings('glove')
+    flair_forward_embeddings = FlairEmbeddings('polish-forward')
+
+    # Combine the embeddings
+    document_embeddings = DocumentRNNEmbeddings([word_embeddings, flair_forward_embeddings])
+
+    # Create the label dictionary from the corpus
+    label_dictionary = corpus.make_label_dictionary('class')
+
+    # Define the text classifier model
+    classifier = TextClassifier(
+        embeddings=document_embeddings,
+        label_dictionary=label_dictionary,
+        label_type='class'
+    )
+
+    # Define the trainer
+    trainer = ModelTrainer(classifier, corpus)
+
+    # Train the model
+    trainer.train(save_dir, max_epochs=3)
+
+    # Save the model
+    classifier.save(save_dir)
 
 
 from sklearn.feature_extraction.text import CountVectorizer
@@ -156,8 +197,8 @@ def train_gbm(train, test, save_dir):
 
     return model
 
-def check_svm(input_text):
-    with open("../models/svm_model.pkl", "rb") as f:
+def check_model(input_text, model_path):
+    with open(model_path, "rb") as f:
         model = pickle.load(f)
 
     prediction = model.predict([input_text])
@@ -169,18 +210,38 @@ def check_svm(input_text):
 
     return prediction
 
-def check_svm_balanced(input_text):
-    with open("../models/svm_model_balanced.pkl", "rb") as f:
-        model = pickle.load(f)
 
-    prediction = model.predict([input_text])
+def check_flair_model(input_text, best_model_path, final_model_path):
+    # Load the best and final models
+    best_model = TextClassifier.load(best_model_path)
+    final_model = TextClassifier.load(final_model_path)
 
-    if prediction == 0:
-        print("Non-harmful")
-    elif prediction == 1:
-        print("Harmful")
+    # Create a Sentence object from the input text
+    sentence = Sentence(input_text)
 
-    return prediction
+    # Use the best model to predict the label of the sentence
+    best_model.predict(sentence)
+
+    # Get the predicted label and confidence
+    best_predicted_label = sentence.labels[0].value
+    best_confidence = sentence.labels[0].score
+
+    print(f"Best model prediction: Label - {best_predicted_label}, Confidence - {best_confidence}")
+
+    # Use the final model to predict the label of the sentence
+    final_model.predict(sentence)
+
+    # Get the predicted label and confidence
+    final_predicted_label = sentence.labels[0].value
+    final_confidence = sentence.labels[0].score
+
+    print(f"Final model prediction: Label - {final_predicted_label}, Confidence - {final_confidence}")
+
+    # Return 'Harmful' or 'Non-harmful' based on the predicted label
+    if final_predicted_label == '1':
+        return 'Harmful'
+    else:
+        return 'Non-harmful'
 
 
 

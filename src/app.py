@@ -1,6 +1,6 @@
 import pandas as pd
 
-from src.data.preprocess import load_dataset_from_disk, merge_data, preprocess_data
+from src.data.preprocess import *
 from src.models.models import *
 from src.data.augmentation import back_translation
 
@@ -25,8 +25,8 @@ if __name__ == "__main__":
     # print("Train set classes distribution: ", train["class"].value_counts())
     # print("Test set classes distribution: ", test["class"].value_counts())
 
-    # train = pd.read_csv("../data/Train/train_preprocessed.csv", sep="\t")
-    # test = pd.read_csv("../data/Test/test_preprocessed.csv", sep="\t")
+    train = pd.read_csv("../data/Train/train_preprocessed.csv", sep="\t")
+    test = pd.read_csv("../data/Test/test_preprocessed.csv", sep="\t")
     
     # # SVM model
     # train_svm_balanced(train, test, "../models/svm_model_balanced.pkl")
@@ -41,8 +41,20 @@ if __name__ == "__main__":
     # Gradient Boosting Machines model
     # train_gbm(train, test, "../models/gbm_model.pkl")
 
-    check_svm("Ty dzbanie")
-    check_svm_balanced("Ty dzbanie")
+
+    # Flair model
+    train_file = "../data/Train/train_preprocessed.csv"
+    test_file = "../data/Test/test_preprocessed.csv"
+
+    train_flair_classifier(train_file, test_file, "../models/flair_model")
+
+    # check_model("Ty dzbanie", "../models/svm_model.pkl")
+    # check_model("Ty dzbanie", "../models/svm_model_balanced.pkl")
+    # check_flair_model("Ty dzbanie", "../models/flair_model/best-model.pt", "../models/flair_model/final-model.pt")
+
+    # check_model("Ty dzbanie", "../models/mnb_model.pkl")
+    # check_model("Ty dzbanie", "../models/mlp_model.pkl")
+    # check_model("Ty dzbanie", "../models/gbm_model.pkl")
 
     # #Augmentation
     #
