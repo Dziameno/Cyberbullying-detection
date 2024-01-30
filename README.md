@@ -26,8 +26,12 @@ harmful                  753            121
    macro avg        0.85      0.58      0.61       942
 weighted avg        0.88      0.89      0.86       942
 ```
- - Model has high accuracy for non-harmful tweets <br>
- - Class 0 has more instances than class 1, so model is biased to class 0.
+##### Strengths:
+ - Good overall accuracy <br>
+ - High precision and recall for non-harmful class.
+##### Weaknesses:
+ - Limited recall for harmful class, indicating challenges in identifying harmful tweets <br>
+ - Biased towards the majority class (non-harmful).
 
 ### Results of SVC classifier with class_weight='balanced':
 ##### Acc score: 89.38%
@@ -42,6 +46,11 @@ weighted avg        0.88      0.89      0.86       942
    macro avg       0.78      0.68      0.71       942
 weighted avg       0.88      0.89      0.88       942
 ```
+##### Improvements:
+ - Improved recall for harmful class <br>
+ - Balanced class weights address bias, resulting in better overall performance.
+##### Challenges:
+ - Limited precision and recall for harmful class
 ### Results of Multinominal Naive Bayes classifier:
 ##### Acc score:  87.9%
 ![Confusion Matrix](matrixes/mnb.png)
@@ -56,6 +65,11 @@ Classification report:
    macro avg       0.82      0.54      0.54       942
 weighted avg       0.87      0.88      0.83       942
 ```
+##### Observations:
+ - Good precision for non-harmful class <br>
+ - Limited recall and precision for harmful class
+##### Challenges:
+ - Struggles to capture harmful tweets effectively
 ### Results of Multilayer Perceptron classifier:
 ##### Accuracy score:  88%
 ![Confusion Matrix](matrixes/mp.png)
@@ -70,6 +84,11 @@ Classification report:
    macro avg       0.74      0.60      0.63       942
 weighted avg       0.86      0.88      0.86       942
 ```
+##### Strengths:
+ - High precision for non-harmful class <br>
+ - Balanced precision and recall for harmful class
+##### Challenges:
+ - Moderate recall for harmful class, indicating room for improvement
 ### Results of Gradient Boosting Machines classifier:
 ##### Accuracy score:  87.9%
 ![Confusion Matrix](matrixes/gbm.png)
@@ -91,6 +110,11 @@ Classification report:
    macro avg       0.94      0.53      0.52       942
 weighted avg       0.89      0.88      0.83       942
 ```
+##### Observations:
+ - Excellent precision for non-harmful class <br>
+ - Struggles with recall for harmful class
+##### Challenges:
+ - Imbalanced recall, especially for harmful tweets
 ## SetFit
 https://huggingface.co/docs/setfit/index
 
@@ -125,6 +149,12 @@ Classification Report:
    macro avg       0.68      0.79      0.70       942
 weighted avg       0.89      0.82      0.84       942
 ```
+##### Strengths:
+ - Good precision for harmful class
+ - Balanced precision and recall for non-harmful class
+
+##### Challenges:
+ - Limited recall for harmful class
 ###### num_samples = 50 <br>
 ###### batch_size = 128 <br>
 ###### num_epochs = 10 <br>
@@ -143,7 +173,12 @@ Classification Report:
    macro avg       0.68      0.82      0.70       942
 weighted avg       0.90      0.81      0.83       942
 ```
+##### Strengths:
+ - Improved accuracy with num_samples = 50
+ - Model maintains good precision for harmful class
 
+##### Challenges:
+ - Suitable for applications where balance between this two classes is important
 ### Results of SetFit with st-polish-paraphrase-from-mpnet:
 https://huggingface.co/sdadas/st-polish-paraphrase-from-mpnet
 
@@ -165,6 +200,14 @@ Classification Report:
    macro avg       0.64      0.77      0.65       942
 weighted avg       0.88      0.76      0.80       942
 ```
+##### Observations:
+- Struggles with precision for harmful class
+- Moderate recall for harmful class
+
+##### Challenges:
+- Less effective in identifying harmful tweets
+
+    Less effective in identifying harmful tweets
 ### Results of SetFit with mmlw-roberta-base:
 https://huggingface.co/sdadas/mmlw-roberta-base
 ###### num_samples = 20 <br>
@@ -185,6 +228,10 @@ Classification Report:
    macro avg       0.66      0.80      0.68       942
 weighted avg       0.89      0.78      0.82       942
 ```
+##### Strengths:
+ - Improved recall for harmful class
+##### Challenges:
+ - Limited precision for harmful class
 ### Results of SetFit with mmlw-roberta-large:
 https://huggingface.co/sdadas/mmlw-roberta-large
 ###### num_samples = 12 <br>
@@ -205,6 +252,12 @@ Classification Report:
    macro avg       0.64      0.78      0.64       942
 weighted avg       0.88      0.73      0.77       942
 ```
+##### Observations:
+ - Struggles with recall for non-harmful class
+ - Limited precision for harmful class
+
+##### Challenges:
+ - Lower overall accuracy, indicating room for improvement
 #### Augmentation:
 
 https://neptune.ai/blog/data-augmentation-nlp
@@ -214,6 +267,12 @@ There was a plan to use back translation of harmful tweets polish->english->poli
 Also other augmentation methods from article above were planned to use,
 but dataset was hard to augment, because of the language and not many
 synonyms of curse words in polish language.
+
+## Overall Conlusions:
+ - **Class Imbalance:** Majority of models show bias towards the non-harmful class due to its larger size.
+ - **Harmful Class Identification:** Across various models, identifying harmful tweets remains a challenge, with limited recall and precision.
+ - **SetFit Models:** Exhibit varying performance; tuning hyperparameters and exploring different models may lead to improvements.
+ - **Augmentation Challenges:** Limited effectiveness due to language constraints in Polish.
 
 [//]: # (- back translation of harmful tweets polish->english->polish)
 
