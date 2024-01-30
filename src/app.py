@@ -49,6 +49,12 @@ if __name__ == "__main__":
     # SetFit model
     # setfit("OrlikB/st-polish-kartonberta-base-alpha-v1", "../models/st-polish-kartonberta-base-alpha-v1")
     # matrix_report_hf("../models/st-polish-kartonberta-base-alpha-v1", test)
+    # setfit("sdadas/st-polish-paraphrase-from-mpnet", "../models/st-polish-paraphrase-from-mpnet")
+    # matrix_report_hf("../models/st-polish-paraphrase-from-mpnet", test)
+    # setfit("sdadas/mmlw-roberta-base", "../models/mmlw-roberta-base")
+    # matrix_report_hf("../models/mmlw-roberta-base", test)
+    setfit("sdadas/mmlw-roberta-large", "../models/mmlw-roberta-large")
+    matrix_report_hf("../models/mmlw-roberta-large", test)
 
     # check_model("Ty dzbanie", "../models/svm_model.pkl")
     # check_model("Ty dzbanie", "../models/svm_model_balanced.pkl")
