@@ -16,6 +16,7 @@ harmful                  753            121
 ### Results of SVC classifier:
 ##### Acc score: 88.85%
 ![Confusion Matrix](matrixes/svc.png)
+![ROC Curve](roc_curves/svm_model_proba.pkl.png)
 ```
                 precision    recall  f1-score   support
 
@@ -26,6 +27,13 @@ harmful                  753            121
    macro avg        0.85      0.58      0.61       942
 weighted avg        0.88      0.89      0.86       942
 ```
+Non-harmful < 0 <br>
+Harmful >= 0
+
+For example "Ty dzbanie": <br>
+normal prediction: Harmful <br>
+probability (decision function): 0.16046485
+
 ##### Strengths:
  - Good overall accuracy <br>
  - High precision and recall for non-harmful class.
@@ -36,6 +44,7 @@ weighted avg        0.88      0.89      0.86       942
 ### Results of SVC classifier with class_weight='balanced':
 ##### Acc score: 89.38%
 ![Confusion Matrix](matrixes/svc_balanced.png)
+![ROC Curve](roc_curves/svm_model_balanced_proba.pkl.png)
 ```
                precision    recall  f1-score   support
 
@@ -46,6 +55,14 @@ weighted avg        0.88      0.89      0.86       942
    macro avg       0.78      0.68      0.71       942
 weighted avg       0.88      0.89      0.88       942
 ```
+Non-harmful < 0 <br>
+Harmful >= 0
+
+For example "Ty dzbanie": <br>
+normal prediction: Harmful <br>
+probability (decision function): 0.71385828
+
+
 ##### Improvements:
  - Improved recall for harmful class <br>
  - Balanced class weights address bias, resulting in better overall performance.
@@ -54,6 +71,7 @@ weighted avg       0.88      0.89      0.88       942
 ### Results of Multinominal Naive Bayes classifier:
 ##### Acc score:  87.9%
 ![Confusion Matrix](matrixes/mnb.png)
+![ROC Curve](roc_curves/mnb_model_proba.pkl.png)
 ```
 Classification report:
                precision    recall  f1-score   support
@@ -65,6 +83,12 @@ Classification report:
    macro avg       0.82      0.54      0.54       942
 weighted avg       0.87      0.88      0.83       942
 ```
+Non-harmful < 50 <br>
+Harmful >= 50
+
+For example "Ty dzbanie": <br>
+normal prediction: Non-Harmful <br>
+probability: 15.50459416
 ##### Observations:
  - Good precision for non-harmful class <br>
  - Limited recall and precision for harmful class
@@ -73,6 +97,7 @@ weighted avg       0.87      0.88      0.83       942
 ### Results of Multilayer Perceptron classifier:
 ##### Accuracy score:  88%
 ![Confusion Matrix](matrixes/mp.png)
+![ROC Curve](roc_curves/mlp_model_proba.pkl.png)
 ```
 Classification report:
                precision    recall  f1-score   support
@@ -84,6 +109,12 @@ Classification report:
    macro avg       0.74      0.60      0.63       942
 weighted avg       0.86      0.88      0.86       942
 ```
+Non-harmful < 50 <br>
+Harmful >= 50
+
+For example "Ty dzbanie": <br>
+normal prediction: Non-Harmful <br>
+probability: 5.15370961
 ##### Strengths:
  - High precision for non-harmful class <br>
  - Balanced precision and recall for harmful class
@@ -92,6 +123,7 @@ weighted avg       0.86      0.88      0.86       942
 ### Results of Gradient Boosting Machines classifier:
 ##### Accuracy score:  87.9%
 ![Confusion Matrix](matrixes/gbm.png)
+![ROC Curve](roc_curves/gbm_model_proba.pkl.png)
 ```
 Classification report:
                precision    recall  f1-score   support
@@ -103,6 +135,12 @@ Classification report:
    macro avg       0.94      0.53      0.52       942
 weighted avg       0.89      0.88      0.83       942
 ```
+Non-harmful < 50 <br>
+Harmful >= 50
+
+For example "Ty dzbanie": <br>
+normal prediction: Non-Harmful <br>
+probability: 19.74300024
 ##### Observations:
  - Excellent precision for non-harmful class <br>
  - Struggles with recall for harmful class
@@ -124,6 +162,7 @@ https://huggingface.co/OrlikB/st-polish-kartonberta-base-alpha-v1
 
 ##### Accuracy score:  82.8%
 ![Confusion Matrix](matrixes/st-polish-kartonberta-base-alpha-v1_20.png)
+
 ```
 Classification Report:
                precision    recall  f1-score   support
@@ -148,6 +187,7 @@ weighted avg       0.89      0.82      0.84       942
 
 ##### Accuracy score:  83.8%
 ![Confusion Matrix](matrixes/st-polish-kartonberta-base-alpha-v1_50.png)
+![ROC Curve](roc_curves/st-polish-kartonberta-base-alpha-v1.png)
 ```
 Classification Report:
                precision    recall  f1-score   support
@@ -175,6 +215,7 @@ https://huggingface.co/sdadas/st-polish-paraphrase-from-mpnet
 
 ##### Accuracy score:  73.2%
 ![Confusion Matrix](matrixes/st-polish-paraphrase-from-mpnet.png)
+![ROC Curve](roc_curves/st-polish-paraphrase-from-mpnet.png)
 ```
 Classification Report:
                precision    recall  f1-score   support
@@ -203,6 +244,7 @@ https://huggingface.co/sdadas/mmlw-roberta-base
 
 ##### Accuracy score:  76.4%
 ![Confusion Matrix](matrixes/mmlw-roberta-base.png)
+![ROC Curve](roc_curves/mmlw-roberta-base.png)
 ```
 Classification Report:
                precision    recall  f1-score   support
@@ -227,6 +269,7 @@ https://huggingface.co/sdadas/mmlw-roberta-large
 
 ##### Accuracy score:  71.2%
 ![Confusion Matrix](matrixes/mmlw-roberta-large.png)
+![ROC Curve](roc_curves/mmlw-roberta-large.png)
 ```
 Classification Report:
                precision    recall  f1-score   support
@@ -244,6 +287,29 @@ weighted avg       0.88      0.73      0.77       942
 
 ##### Challenges:
  - Lower overall accuracy, indicating room for improvement
+
+## SentenceTransformers
+
+### Results of SentenceTransformers with paraphrase-multilingual-MiniLM-L12-v2:
+https://huggingface.co/DataikuNLP/paraphrase-multilingual-MiniLM-L12-v2
+
+##### Accuracy score:  %
+![Confusion Matrix](matrixes/paraphrase-multilingual-MiniLM-L12-v2.png)
+![ROC Curve](roc_curves/paraphrase-multilingual-MiniLM-L12-v2.png)
+```
+Classification Report:
+               precision    recall  f1-score   support
+
+           0       1.00      0.03      0.06       821
+           1       0.13      1.00      0.23       121
+
+    accuracy                           0.15       942
+   macro avg       0.57      0.51      0.14       942
+weighted avg       0.89      0.15      0.08       942
+```
+
+https://huggingface.co/sentence-transformers/distiluse-base-multilingual-cased-v1
+
 #### Augmentation:
 
 https://neptune.ai/blog/data-augmentation-nlp

@@ -28,17 +28,18 @@ if __name__ == "__main__":
     test = pd.read_csv("../data/Test/test_preprocessed.csv", sep="\t")
     
     # # SVM model
-    # train_svm_balanced(train, test, "../models/svm_model_balanced.pkl")
-    # train_svm(train, test, "../models/svm_model.pkl")
+    # train_svm(train, test, "../models/svm_model_proba.pkl")
+    # train_svm_balanced(train, test, "../models/svm_model_balanced_proba.pkl")
+
 
     # Multinominal Naive Bayes model
-    # train_mnb(train, test, "../models/mnb_model.pkl")
+    # train_mnb(train, test, "../models/mnb_model_proba.pkl")
     
     # Multilayer Perceptron model
-    # train_mlp(train, test, "../models/mlp_model.pkl")
+    # train_mlp(train, test, "../models/mlp_model_proba.pkl")
     
     # Gradient Boosting Machines model
-    # train_gbm(train, test, "../models/gbm_model.pkl")
+    # train_gbm(train, test, "../models/gbm_model_proba.pkl")
 
 
     # # Flair model
@@ -46,6 +47,7 @@ if __name__ == "__main__":
     # test_file = "../data/Test/test_preprocessed.csv"
     #
     # train_flair_classifier(train_file, test_file, "../models/flair_model")
+
 
     # SetFit model
     # setfit("OrlikB/st-polish-kartonberta-base-alpha-v1", "../models/st-polish-kartonberta-base-alpha-v1")
@@ -57,10 +59,29 @@ if __name__ == "__main__":
     # setfit("sdadas/mmlw-roberta-large", "../models/mmlw-roberta-large")
     # matrix_report_hf("../models/mmlw-roberta-large", test)
 
+
+    # Sentence Transformers
+    # sentence_transformer("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2", "../models/paraphrase-multilingual-MiniLM-L12-v2")
+    # matrix_report_hf("../models/paraphrase-multilingual-MiniLM-L12-v2", test)
+    # sentence_transformer("sentence-transformers/paraphrase-multilingual-mpnet-base-v2", "../models/paraphrase-multilingual-mpnet-base-v2")
+    # matrix_report_hf("../models/paraphrase-multilingual-mpnet-base-v2", test)
+    # sentence_transformer("sentence-transformers/distiluse-base-multilingual-cased-v1", "../models/distiluse-base-multilingual-cased-v1")
+
     # check_model("Ty dzbanie", "../models/svm_model.pkl")
+    # check_model_proba("Ty dzbanie", "../models/svm_model_proba.pkl")
+    #
     # check_model("Ty dzbanie", "../models/svm_model_balanced.pkl")
-    # check_flair_model("Ty dzbanie", "../models/flair_model/best-model.pt", "../models/flair_model/final-model.pt")
-    # check_setfit_model("Ty dzbanie", "../models/st-polish-kartonberta-base-alpha-v1")
+    # check_model_proba("Ty dzbanie", "../models/svm_model_balanced_proba.pkl")
+
+    # check_other_models("Ty dzbanie", "../models/mnb_model_proba.pkl", "../models/vectorizers/mnb_vectorizer.pkl")
+    # check_other_models("Ty dzbanie", "../models/mlp_model_proba.pkl","../models/vectorizers/mlp_vectorizer.pkl")
+    # check_other_models("Ty dzbanie", "../models/gbm_model_proba.pkl","../models/vectorizers/gbm_vectorizer.pkl")
+
+    # # check_flair_model("Ty dzbanie", "../models/flair_model/best-model.pt", "../models/flair_model/final-model.pt")
+    # check_setfit_model("Ty człowieku", "../models/st-polish-kartonberta-base-alpha-v1")
+    # check_setfit_model("Ty człowieku", "../models/st-polish-paraphrase-from-mpnet")
+    # check_setfit_model("Ty człowieku", "../models/mmlw-roberta-base")
+    # check_setfit_model("Ty człowieku", "../models/mmlw-roberta-large")
 
     # check_model("Ty dzbanie", "../models/mnb_model.pkl")
     # check_model("Ty dzbanie", "../models/mlp_model.pkl")
@@ -87,3 +108,4 @@ if __name__ == "__main__":
     # plot_matrix(621,200,26,95, "../matrixes/st-polish-paraphrase-from-mpnet.png")
     # plot_matrix(639,182,21,100, "../matrixes/mmlw-roberta-base.png")
     # plot_matrix(586,235,18,103, "../matrixes/mmlw-roberta-large.png")
+    # plot_matrix(24,797,0,121, "../matrixes/paraphrase-multilingual-MiniLM-L12-v2.png")

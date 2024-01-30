@@ -1,8 +1,9 @@
+import os
 import pickle
 
 import numpy as np
 from flair.data import Corpus, Sentence
-from flair.datasets import ColumnCorpus
+from flair.datasets import ColumnCorpus, DataLoader
 from flair.embeddings import WordEmbeddings, FlairEmbeddings, DocumentRNNEmbeddings
 from flair.models import TextClassifier
 from flair.trainers import ModelTrainer
@@ -12,7 +13,11 @@ from sklearn.pipeline import Pipeline
 from sklearn.svm import LinearSVC
 from sklearn.utils import class_weight
 from datasets import load_dataset
-from setfit import SetFitModel, Trainer, sample_dataset, TrainingArguments
+from setfit import SetFitModel, Trainer, sample_dataset, TrainingArguments, losses
+from sentence_transformers import SentenceTransformer, InputExample, losses
+from transformers import AutoTokenizer, AutoModel
+import torch
+from torch.utils.data import DataLoader
 
 # Support Vector Machine (SVM) to classify the data
 def train_svm_balanced(train, test, save_dir):
@@ -34,6 +39,34 @@ def train_svm_balanced(train, test, save_dir):
     # Predicting test set
     predictions = text_clf.predict(test["text"])
 
+    # Get the probabilities for each class
+    probabilities = text_clf.decision_function(test["text"])
+
+    # Compute the false positive rate, true positive rate, and thresholds
+    fpr, tpr, thresholds = roc_curve(test["class"], probabilities)
+
+    # Compute the area under the curve (AUC)
+    roc_auc = auc(fpr, tpr)
+
+    # Plot the ROC curve
+    plt.figure()
+    plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
+    plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver Operating Characteristic')
+    plt.legend(loc="lower right")
+
+    # Extract the model name from the model path
+    model_name = os.path.basename(save_dir)
+
+    # Save the ROC curve to a file
+    plt.savefig(f'../roc_curves/{model_name}.png')
+
+    plt.show()
+
     # Printing results
     print("Accuracy score: ", accuracy_score(test["class"], predictions))
     print("Confusion matrix: \n", confusion_matrix(test["class"], predictions))
@@ -52,7 +85,7 @@ def train_svm(train, test, save_dir):
 
     # Update LinearSVC with class weights
     text_clf = Pipeline([('tfidf', TfidfVectorizer()),
-                         ('clf', LinearSVC),
+                         ('clf', LinearSVC()),
                          ])
 
     # Training model
@@ -60,6 +93,34 @@ def train_svm(train, test, save_dir):
 
     # Predicting test set
     predictions = text_clf.predict(test["text"])
+
+    # Get the probabilities for each class
+    probabilities = text_clf.decision_function(test["text"])
+
+    # Compute the false positive rate, true positive rate, and thresholds
+    fpr, tpr, thresholds = roc_curve(test["class"], probabilities)
+
+    # Compute the area under the curve (AUC)
+    roc_auc = auc(fpr, tpr)
+
+    # Plot the ROC curve
+    plt.figure()
+    plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
+    plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver Operating Characteristic')
+    plt.legend(loc="lower right")
+
+    # Extract the model name from the model path
+    model_name = os.path.basename(save_dir)
+
+    # Save the ROC curve to a file
+    plt.savefig(f'../roc_curves/{model_name}.png')
+
+    plt.show()
 
     # Printing results
     print("Accuracy score: ", accuracy_score(test["class"], predictions))
@@ -139,7 +200,40 @@ def setfit(model_link, save_dir):
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 
+from transformers import AutoTokenizer
+
+def sentence_transformer(model_link, save_dir):
+    dataset = load_dataset("poleval2019_cyberbullying", "task01")
+
+    model = SentenceTransformer(model_link)
+
+    # Get the list of sentences
+    texts = dataset["train"]["text"]
+
+    # Convert the training data into the format required by SentenceTransformer
+    # Create pairs of sentences for the CosineSimilarityLoss
+    labels = dataset["train"]["label"]
+    train_examples = [InputExample(texts=[texts[i], texts[i + 1]], label=float(labels[i])) for i in
+                      range(0, len(texts) - 1, 2)]
+
+    # Create a DataLoader for the training data
+    train_dataloader = DataLoader(train_examples, shuffle=True, batch_size=16)
+
+    # Define the training procedure
+    train_loss = losses.CosineSimilarityLoss(model)
+
+    # Train the model
+    model.fit(train_objectives=[(train_dataloader, train_loss)], epochs=1, warmup_steps=100)
+
+    # Save the trained model
+    model.save(save_dir)
+
+
 # Multinomial Naive Bayes model
+from sklearn.metrics import roc_curve, auc
+import matplotlib.pyplot as plt
+import os
+
 def train_mnb(train, test, save_dir):
     train["text"].fillna("", inplace=True)
     test["text"].fillna("", inplace=True)
@@ -156,6 +250,34 @@ def train_mnb(train, test, save_dir):
     # Predicting test set
     predictions = model.predict(X_test)
 
+    # Get the probabilities for each class
+    probabilities = model.predict_proba(X_test)[:, 1]
+
+    # Compute the false positive rate, true positive rate, and thresholds
+    fpr, tpr, thresholds = roc_curve(test["class"], probabilities)
+
+    # Compute the area under the curve (AUC)
+    roc_auc = auc(fpr, tpr)
+
+    # Plot the ROC curve
+    plt.figure()
+    plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
+    plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver Operating Characteristic')
+    plt.legend(loc="lower right")
+
+    # Extract the model name from the model path
+    model_name = os.path.basename(save_dir)
+
+    # Save the ROC curve to a file
+    plt.savefig(f'../roc_curves/{model_name}.png')
+
+    plt.show()
+
     # Printing results
     print("Accuracy score: ", accuracy_score(test["class"], predictions))
     print("Confusion matrix: \n", confusion_matrix(test["class"], predictions))
@@ -164,6 +286,10 @@ def train_mnb(train, test, save_dir):
     # Save the trained model
     with open(save_dir, "wb") as f:
         pickle.dump(model, f)
+
+    # Save the vectorizer used during training
+    with open('../models/vectorizers/mnb_vectorizer.pkl', 'wb') as f:
+        pickle.dump(vectorizer, f)
 
     return model
 
@@ -185,6 +311,34 @@ def train_mlp(train, test, save_dir):
     # Predicting test set
     predictions = model.predict(X_test)
 
+    # Get the probabilities for each class
+    probabilities = model.predict_proba(X_test)[:, 1]
+
+    # Compute the false positive rate, true positive rate, and thresholds
+    fpr, tpr, thresholds = roc_curve(test["class"], probabilities)
+
+    # Compute the area under the curve (AUC)
+    roc_auc = auc(fpr, tpr)
+
+    # Plot the ROC curve
+    plt.figure()
+    plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
+    plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver Operating Characteristic')
+    plt.legend(loc="lower right")
+
+    # Extract the model name from the model path
+    model_name = os.path.basename(save_dir)
+
+    # Save the ROC curve to a file
+    plt.savefig(f'../roc_curves/{model_name}.png')
+
+    plt.show()
+
     # Printing results
     print("Accuracy score: ", accuracy_score(test["class"], predictions))
     print("Confusion matrix: \n", confusion_matrix(test["class"], predictions))
@@ -193,6 +347,10 @@ def train_mlp(train, test, save_dir):
     # Save the trained model
     with open(save_dir, "wb") as f:
         pickle.dump(model, f)
+
+    # Save the vectorizer used during training
+    with open('../models/vectorizers/mlp_vectorizer.pkl', 'wb') as f:
+        pickle.dump(vectorizer, f)
 
     return model
 
@@ -214,6 +372,34 @@ def train_gbm(train, test, save_dir):
     # Predicting test set
     predictions = model.predict(X_test)
 
+    # Get the probabilities for each class
+    probabilities = model.predict_proba(X_test)[:, 1]
+
+    # Compute the false positive rate, true positive rate, and thresholds
+    fpr, tpr, thresholds = roc_curve(test["class"], probabilities)
+
+    # Compute the area under the curve (AUC)
+    roc_auc = auc(fpr, tpr)
+
+    # Plot the ROC curve
+    plt.figure()
+    plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
+    plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver Operating Characteristic')
+    plt.legend(loc="lower right")
+
+    # Extract the model name from the model path
+    model_name = os.path.basename(save_dir)
+
+    # Save the ROC curve to a file
+    plt.savefig(f'../roc_curves/{model_name}.png')
+
+    plt.show()
+
     # Printing results
     print("Accuracy score: ", accuracy_score(test["class"], predictions))
     print("Confusion matrix: \n", confusion_matrix(test["class"], predictions))
@@ -222,6 +408,10 @@ def train_gbm(train, test, save_dir):
     # Save the trained model
     with open(save_dir, "wb") as f:
         pickle.dump(model, f)
+
+    # Save the vectorizer used during training
+    with open('../models/vectorizers/gbm_vectorizer.pkl', 'wb') as f:
+        pickle.dump(vectorizer, f)
 
     return model
 
@@ -235,6 +425,39 @@ def check_model(input_text, model_path):
         print("Non-harmful")
     elif prediction == 1:
         print("Harmful")
+
+    return prediction
+
+def check_model_proba(input_text, model_path):
+    with open(model_path, "rb") as f:
+        model = pickle.load(f)
+
+    prediction = model.decision_function([input_text])
+
+    if prediction <= 0:
+        print("Non-harmful" + " " + str(prediction))
+    else:
+        print("Harmful" + " " + str(prediction))
+
+    return prediction
+
+def check_other_models(input_text, model_path, vectorizer_path):
+    with open(model_path, "rb") as f:
+        model = pickle.load(f)
+
+    # Load the vectorizer used during training
+    with open(vectorizer_path, "rb") as f:
+        vectorizer = pickle.load(f)
+
+    # Transform the input text using the loaded vectorizer
+    vft = vectorizer.transform([input_text])
+
+    prediction = model.predict_proba(vft)[:, 1] * 100
+
+    if prediction < 50:
+        print("Non-harmful" + " " + str(prediction))
+    else:
+        print("Harmful" + " " + str(prediction))
 
     return prediction
 
@@ -283,6 +506,9 @@ def check_setfit_model(input_text, model_path):
 
 from sklearn.metrics import confusion_matrix, classification_report
 
+from sklearn.metrics import roc_curve, auc
+from matplotlib import pyplot as plt
+
 def matrix_report_hf(model_path, test):
     model = SetFitModel.from_pretrained(model_path)
 
@@ -305,6 +531,37 @@ def matrix_report_hf(model_path, test):
         true_labels_list.append(str(row["class"]))
         predicted_labels_list.append(predicted_label)
 
+    # Convert the true labels and predicted labels to integers
+    true_labels_list = [int(label) for label in true_labels_list]
+    predicted_labels_list = [int(label) for label in predicted_labels_list]
+
+    # Compute the false positive rate, true positive rate, and thresholds
+    fpr, tpr, thresholds = roc_curve(true_labels_list, predicted_labels_list)
+
+    # Compute the area under the curve (AUC)
+    roc_auc = auc(fpr, tpr)
+
+    # Plot the ROC curve
+    plt.figure()
+    plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
+    plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver Operating Characteristic')
+    plt.legend(loc="lower right")
+
+    # Extract the model name from the model path
+    model_name = os.path.basename(model_path)
+
+    # Save the ROC curve to a file
+    plt.savefig(f'../roc_curves/{model_name}.png')
+
+    plt.show()
+
     # Using sklearn to print the confusion matrix and classification report
     print("Confusion Matrix:\n", confusion_matrix(true_labels_list, predicted_labels_list))
     print("Classification Report:\n", classification_report(true_labels_list, predicted_labels_list))
+
+
