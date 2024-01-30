@@ -93,13 +93,6 @@ weighted avg       0.86      0.88      0.86       942
 ##### Accuracy score:  87.9%
 ![Confusion Matrix](matrixes/gbm.png)
 ```
-Confusion matrix:
-                     predicted:
-actual:                            positive      negative
-       positive                      821            0
-       negative                      114            7
-```
-```
 Classification report:
                precision    recall  f1-score   support
 
@@ -131,13 +124,6 @@ https://huggingface.co/OrlikB/st-polish-kartonberta-base-alpha-v1
 
 ##### Accuracy score:  82.8%
 ![Confusion Matrix](matrixes/st-polish-kartonberta-base-alpha-v1_20.png)
-```
-Confusion matrix:
-                     predicted:
-actual:                            positive      negative
-       positive                      680           141
-       negative                      29            92
-```
 ```
 Classification Report:
                precision    recall  f1-score   support
