@@ -13,15 +13,9 @@ non-harmful             8608            821
 harmful                  753            121
 ```
 
-#### Results of SVC classifier:
+### Results of SVC classifier:
 ##### Acc score: 88.85%
-```
-                predicted: 
-actual:                         postive  negative
-       positive                   816       5
-       negative                   100      21
-```
-
+![Confusion Matrix](matrixes/svc.png)
 ```
                 precision    recall  f1-score   support
 
@@ -35,15 +29,9 @@ weighted avg        0.88      0.89      0.86       942
  - Model has high accuracy for non-harmful tweets <br>
  - Class 0 has more instances than class 1, so model is biased to class 0.
 
-#### Results of SVC classifier with class_weight='balanced':
+### Results of SVC classifier with class_weight='balanced':
 ##### Acc score: 89.38%
-```
-                predicted: 
-actual:                         postive  negative
-       positive                   795       26
-       negative                    74       47
-       
-```
+![Confusion Matrix](matrixes/svc_balanced.png)
 ```
                precision    recall  f1-score   support
 
@@ -54,15 +42,9 @@ actual:                         postive  negative
    macro avg       0.78      0.68      0.71       942
 weighted avg       0.88      0.89      0.88       942
 ```
-#### Results of Multinominal Naive Bayes classifier:
+### Results of Multinominal Naive Bayes classifier:
 ##### Acc score:  87.9%
-```
-Confusion matrix:
-                     predicted:
-actual:                            positive      negative
-       positive                      818             3
-       negative                      111            10
-```
+![Confusion Matrix](matrixes/mnb.png)
 ```
 Classification report:
                precision    recall  f1-score   support
@@ -74,15 +56,9 @@ Classification report:
    macro avg       0.82      0.54      0.54       942
 weighted avg       0.87      0.88      0.83       942
 ```
-#### Results of Multilayer Perceptron classifier:
+### Results of Multilayer Perceptron classifier:
 ##### Accuracy score:  88%
-```
-Confusion matrix:
-                     predicted:
-actual:                            positive      negative
-       positive                      802            19
-       negative                       94            27
-```
+![Confusion Matrix](matrixes/mp.png)
 ```
 Classification report:
                precision    recall  f1-score   support
@@ -94,8 +70,9 @@ Classification report:
    macro avg       0.74      0.60      0.63       942
 weighted avg       0.86      0.88      0.86       942
 ```
-#### Results of Gradient Boosting Machines classifier:
+### Results of Gradient Boosting Machines classifier:
 ##### Accuracy score:  87.9%
+![Confusion Matrix](matrixes/gbm.png)
 ```
 Confusion matrix:
                      predicted:
@@ -129,6 +106,7 @@ https://huggingface.co/OrlikB/st-polish-kartonberta-base-alpha-v1
 ###### Total optimization steps = 70 <br>
 
 ##### Accuracy score:  82.8%
+![Confusion Matrix](matrixes/st-polish-kartonberta-base-alpha-v1_20.png)
 ```
 Confusion matrix:
                      predicted:
@@ -153,13 +131,7 @@ weighted avg       0.89      0.82      0.84       942
 ###### Total optimization steps = 400 <br>
 
 ##### Accuracy score:  83.8%
-```
-Confusion matrix:
-                     predicted:
-actual:                            positive      negative
-       positive                      660           161
-       negative                      20            101
-```
+![Confusion Matrix](matrixes/st-polish-kartonberta-base-alpha-v1_50.png)
 ```
 Classification Report:
                precision    recall  f1-score   support
@@ -181,13 +153,7 @@ https://huggingface.co/sdadas/st-polish-paraphrase-from-mpnet
 ###### Total optimization steps = 70 <br>
 
 ##### Accuracy score:  73.2%
-```
-Confusion matrix:
-                     predicted:
-actual:                            positive      negative
-       positive                      621           200
-       negative                      26            95
-```
+![Confusion Matrix](matrixes/st-polish-paraphrase-from-mpnet.png)
 ```
 Classification Report:
                precision    recall  f1-score   support
@@ -207,13 +173,7 @@ https://huggingface.co/sdadas/mmlw-roberta-base
 ###### Total optimization steps = 70 <br>
 
 ##### Accuracy score:  76.4%
-```
-Confusion matrix:
-                     predicted:
-actual:                            positive      negative
-       positive                      639           182
-       negative                      21            100
-```
+![Confusion Matrix](matrixes/mmlw-roberta-base.png)
 ```
 Classification Report:
                precision    recall  f1-score   support
@@ -233,13 +193,7 @@ https://huggingface.co/sdadas/mmlw-roberta-large
 ###### Total optimization steps = 30 <br>
 
 ##### Accuracy score:  71.2%
-```
-Confusion matrix:
-                     predicted:
-actual:                            positive      negative
-       positive                      586           235
-       negative                      18            103
-```
+![Confusion Matrix](matrixes/mmlw-roberta-large.png)
 ```
 Classification Report:
                precision    recall  f1-score   support

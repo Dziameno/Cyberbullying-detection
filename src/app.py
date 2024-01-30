@@ -1,6 +1,7 @@
 from src.data.preprocess import *
 from src.models.models import *
 from src.data.augmentation import back_translation
+from src.data.confusion_matrix import plot_matrix
 
 if __name__ == "__main__":
     # # Load data from disk
@@ -53,8 +54,8 @@ if __name__ == "__main__":
     # matrix_report_hf("../models/st-polish-paraphrase-from-mpnet", test)
     # setfit("sdadas/mmlw-roberta-base", "../models/mmlw-roberta-base")
     # matrix_report_hf("../models/mmlw-roberta-base", test)
-    setfit("sdadas/mmlw-roberta-large", "../models/mmlw-roberta-large")
-    matrix_report_hf("../models/mmlw-roberta-large", test)
+    # setfit("sdadas/mmlw-roberta-large", "../models/mmlw-roberta-large")
+    # matrix_report_hf("../models/mmlw-roberta-large", test)
 
     # check_model("Ty dzbanie", "../models/svm_model.pkl")
     # check_model("Ty dzbanie", "../models/svm_model_balanced.pkl")
@@ -74,3 +75,15 @@ if __name__ == "__main__":
     # # Results after back translation
     # train_svm(btran, test, "../models/svm_model_back_translation.pkl")
     # check_svm("")
+
+    # Ploting confusion matrixes for models
+    # plot_matrix(816,5,100,21, "../matrixes/svc.png")
+    # plot_matrix(795,26,74,47, "../matrixes/svc_balanced.png")
+    # plot_matrix(818,3,111,10, "../matrixes/mnb.png")
+    # plot_matrix(802,19,94,27, "../matrixes/mp.png")
+    # plot_matrix(821,0,114,7, "../matrixes/gbm.png")
+    # plot_matrix(680,141,29,92, "../matrixes/st-polish-kartonberta-base-alpha-v1_20.png")
+    # plot_matrix(660,161,20,101, "../matrixes/st-polish-kartonberta-base-alpha-v1_50.png")
+    # plot_matrix(621,200,26,95, "../matrixes/st-polish-paraphrase-from-mpnet.png")
+    # plot_matrix(639,182,21,100, "../matrixes/mmlw-roberta-base.png")
+    # plot_matrix(586,235,18,103, "../matrixes/mmlw-roberta-large.png")
